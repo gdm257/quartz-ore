@@ -1,0 +1,64 @@
+---
+tags:
+  - flag/MachineLanguage/ExchangeFormat/Sequence
+  - Label/Industry-工业科学/IT/Language
+extensions:
+  - .mid
+---
+
+- Ecosystem
+    - [部分SF2音源推荐 - MIDI 技术 - TAT](https://tat.midishow.com/t/topic/23226)
+    - [无聊(┯_┯)有没有推荐的音源啊? - 世界你好 - TAT](https://tat.midishow.com/t/topic/25407/3)
+    - [歌声合成入门教程站 | 鲁鲁教程站ver2.0](https://vocalsynth.harujpg.top/)
+
+- References
+    - [MIDI - 维基百科，自由的百科全书](https://zh.m.wikipedia.org/zh-sg/MIDI)
+    - [音乐研发必备：理解 MIDI 协议与标准 MIDI 文件格式-51CTO.COM](https://www.51cto.com/article/707209.html)
+
+- Philosophy
+    - General MIDI (GM)
+        - aka GM, GM1
+        - publish in 1991
+        - 最广泛
+        - GM 是硬音源标准，但目前是软音源时代，我不知道 GM 还实不实用……
+        - 我仔细想了想，还是非常有用的，作者是可以每个轨道选一个音色，也可以用 DAW 播放 midi，但导出为 midi 给用户播放的时候，还得是 XG/GS/GM 标准，来尽量还原作者的播放环境，所以你能看到一首歌曲有好几个 midi 文件，就是导出不同标准
+    - Rolan GS (GS)
+        - publish in 1991
+        - 广泛使用
+    - Yamaha XG (XG)
+        - publish in 1994
+        - 用的人少
+    - General MIDI Level 2 (GM2)
+        - publish in 1999
+    - [通用MIDI音源做人声？ - MIDI 技术 - TAT](https://tat.midishow.com/t/topic/28620/)
+    - [General MIDI - Wikipedia](https://en.wikipedia.org/wiki/General_MIDI)
+    - [General MIDI - 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/General_MIDI)
+    - [General MIDI Level 2 - Wikipedia](https://en.wikipedia.org/wiki/General_MIDI_Level_2)
+
+- Objects
+    - Note
+        - `0-127`
+            - `60` Middle C
+            - `21-108` [[piano]] 88 keys
+    - Instrument Sound (Program)
+        - 乐器音色
+        - `000:000` - `000:127`
+            - GM Program Numbers
+            - `035 - 081` with 47 percussive sounds
+        - 9 Drum Kits
+            - Supported by GS, GM2
+    - Control Change (CC)
+        - `<controller_number:0-127>:<controller_value:0-127>`
+        - 简单来说就是音效
+        - [CC控制器列表 | CGRW_BLOG](https://cgiirw.github.io/2019/11/29/MIDI-CC-List/)
+    - Registered Parameter Number (RPN)
+    - Non-Registered Parameter Number (NRPN)
+        - CC 区区 128 个控制器不够用
+        - RPN/NRPN 扩展了更多控制器
+        - RPN 是 MIDI 官方的规范
+        - NRPN 并非官方规范，而是由厂商自己定义
+    - System Exclusive messages (SysEx)
+        - 用不着
+    - Channel
+        - 硬件时代的概念，1 条 MIDI 线（物理）只能传输 16 个乐器通道
+        - 软音源时代，该概念没什么太大意义

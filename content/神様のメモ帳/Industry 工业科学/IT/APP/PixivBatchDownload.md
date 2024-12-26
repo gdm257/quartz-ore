@@ -1,0 +1,43 @@
+---
+tags:
+- Label/Industry-工业科学/IT/APP/Command/CLI
+- flag/APP/Download
+- flag/APP/Picture
+- flag/APP/Picture/Implement__/PictureManagement
+---
+
+- 自定义方案
+    - 画师 illustration
+        - 保存路径
+            - 未优化版 `(%{illust.user.id})%{illust.user.name}/illustration/%{illust.title}_p%{page}_%{illust.id}.%{illust.extention}`
+            - 完整版 `(%{illust.user.id})%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/illustration/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}_p%{page}_%{illust.id}.%{illust.extention}`
+    - 画师 manga
+        - 保存路径
+            - 未优化版 `(%{illust.user.id})%{illust.user.name}/manga/%{illust.title}/%{illust.id}_p%{page}.%{illust.extention}`
+            - 完整版 `(%{illust.user.id})%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/manga/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/%{illust.id}_p%{page}.%{illust.extention}`
+    - 画师 anime
+        - 保存路径
+            - 未优化版 `(%{illust.user.id})%{illust.user.name}/anime/%{illust.title}/%{illust.id}_%{illust.ugoira_metadata.frames.length}fps_f%{page}.%{illust.extention}`
+            - 完整版 `(%{illust.user.id})%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/anime/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/%{illust.id}_%{illust.ugoira_metadata.frames.length}fps_f%{page}.%{illust.extention}`
+    - 收藏 illustration
+        - 新版方案 `fav/<画师 illustration>`
+            - `fav/(%{illust.user.id})%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/illustration/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}_p%{page}_%{illust.id}.%{illust.extention}`
+        - 旧版方案
+            - `(%{user.user.id})%{user.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}_bookmark/anime/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}_%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/%{illust.id}_%{illust.ugoira_metadata.frames.length}fps_f%{page}.%{illust.extention}`
+    - 收藏 manga
+        - 新版方案 `fav/<画师 manga>`
+            - `fav/(%{illust.user.id})%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/manga/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/%{illust.id}_p%{page}.%{illust.extention}`
+        - 旧版方案
+            - `(%{user.user.id})%{user.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}_bookmark/manga/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}_%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/%{illust.id}_p%{page}.%{illust.extention}`
+    - 收藏 anime
+        - 新版方案 `fav/<画师 anime>`
+            - `fav/(%{illust.user.id})%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/anime/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/%{illust.id}_%{illust.ugoira_metadata.frames.length}fps_f%{page}.%{illust.extention}`
+        - 旧版方案
+            - `(%{user.user.id})%{user.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}_bookmark/anime/%{illust.title.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}_%{illust.user.name.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")}/%{illust.id}_%{illust.ugoira_metadata.frames.length}fps_f%{page}.%{illust.extention}`
+
+- 链式调用处理 [[Windows 路径保留字符]]
+    - `.replace(/\\*/gi, "⚹").replace(/\\//gi, "／").replace(/\\\\/gi, "∖").replace(/\|/gi, "∣").replace(/\?/gi, "？").replace(/:/gi, "：").replace(/"/gi, "＂").replace(/</gi, "〈").replace(/>/gi, "〉")`
+
+- 下载过滤器
+    - `illust.tags.every(t=>t.name!="想找的TAG")`
+    - `new Date(illust.create_date) < new Date("2021-09-09 00:00:00")`

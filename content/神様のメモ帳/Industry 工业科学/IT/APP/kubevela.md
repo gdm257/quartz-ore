@@ -1,0 +1,175 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Server/Self-hosted
+  - flag/APP/Layer/k8s/Multi-Tenancy/Multi-Customers
+  - flag/APP/Layer/PaaS
+  - flag/APP/Layer/k8s/Multi-Tenancy/Multi-Teams
+  - flag/APP/DevOps/CD
+frontmatter-as-page:
+  - OAM-ComponentDefinition
+  - OAM-TraitDefinition
+  - vela-addon
+github: kubevela/kubevela
+apiVersions:
+  - core.oam.dev/v1beta1
+CRD:
+  - Application
+  - ComponentDefinition
+  - WorkloadDefinition
+  - ScopeDefinition
+  - TraitDefinition
+  - PolicyDefinition
+  - WorkflowStepDefinition
+helm-repos:
+  - https://kubevela.github.io/catalog/official
+  - https://kubevela.github.io/catalog/experimental
+OAM-ComponentDefinition:
+  - cron-task
+  - daemon
+  - k8s-objects
+  - ref-objects
+  - task
+  - webservice
+  - worker
+OAM-TraitDefinition:
+  - affinity
+  - annotations
+  - command
+  - container-image
+  - container-ports
+  - cpuscaler
+  - env
+  - expose
+  - gateway
+  - hostalias
+  - hpa
+  - init-container
+  - json-merge-patch
+  - json-patch
+  - k8s-update-strategy
+  - labels
+  - lifecycle
+  - nocalhost
+  - resource
+  - scaler
+  - service-account
+  - service-binding
+  - sidecar
+  - startup-probe
+  - storage
+  - topologyspreadconstraints
+files:
+  - metadata.yaml
+  - template.cue
+  - parameter.cue
+version-k8s:
+  - "1.19"
+  - "1.26"
+---
+
+- References
+    - [K8s 多集群(二)---初识 KubeVela：基于 OAM 模型的应用交付平台 -](https://www.lixueduan.com/posts/multi-cluster/02-kubevela-intro/)
+
+- Alternatives
+    - [[rainbond]]
+    - [toB应用私有化交付发展历程、技术对比和选型 - Rainbond开源 - 博客园](https://www.cnblogs.com/rainbond/p/16910768.html)
+
+- Users
+    - Platform Teams
+    - End Users
+        - [Separation of Concerns | KubeVela](https://kubevela.io/docs/getting-started/separate-of-concern/)
+
+- Pro
+    - Support Traits
+        - 即便不以 PaaS 的方式使用，[[kubevela]] 仍然有杀手锏
+        - Traits 可以非侵入式 attach 到 Component（e.g. workloads）上，为 compoent 提供 route/metrics/tracing/logs/sidecar etc
+        - [Automated Observability | KubeVela](https://kubevela.io/docs/platform-engineers/operations/observability/)
+    - Support GitOps & PaaS
+        - GitOps chooses *[[git]] repo* as the source of truth E.g. [[ArgoCD]]/[[FluxCD]]
+        - PaaS chooses database producted from *Web UI* as the source of truth E.g. [[Sealos]]
+        - By default, if you're using **CLI** to manage the applications directly from Kubernetes API, we will *sync* the metadata to UI backend *automatically*.
+        - Once you deployed the application from the **UI** console, the automatic *sync* process will *be stopped* as the source of truth may be changed.
+        - However, it's *not recommended to modify* the application properties from both sides.
+        - In conclusion, if you're a CLI/YAML/GitOps user, you'd better just use CLI to manage the application CRD and just use the UI console (velaux) as a dashboard. Once you've managed the app from the UI console, you need to align the behavior and manage apps from UI, API, or Webhook provided by velaux.
+        - [Deploy First Application | KubeVela](https://kubevela.io/docs/quick-start/)
+        - [Separation of Concerns | KubeVela](https://kubevela.io/docs/getting-started/separate-of-concern/)
+        - [Architecture | KubeVela](https://kubevela.io/docs/getting-started/architecture/)
+        - [KubeVela 正式开源：一个高可扩展的云原生应用平台与核心引擎 | KubeVela](https://static.kubevela.net/zh/blog/2020/12/7/kubevela-the-extensible-app-platform-based-on-open-application-model-and-kubernetes)
+        - [深入解读：KubeVela 与 PaaS 有何不同？_Kubernetes中文社区](https://www.kubernetes.org.cn/8680.html)
+    - State Management
+        - We recommend you to use [CRD Operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) for stateful workload. If you just want to use StatefulSet, you can refer to [this blog](https://kubevela.io/blog/2022/05/30/abstraction-kubevela) to build your own easily.
+
+- Ecosystem
+    - [Open Application Model](https://oam.dev/)
+        - [[kubevela]]
+            - OAM X-Definition
+                - Addons == Environments
+                - X-Definition == Templates of using environments
+                - Application == Template Instance
+            - OAM Application
+            - Addon
+                - Generally, an `Addon` consists of Kubernetes CRD and corresponding [X-definition](https://kubevela.net/docs/getting-started/definition), but none of them is necessary
+                - It is *NO need* to install Addons to create a custom PaaS platform
+                    - An *Addon* is *equivalent* to a [[helm]] *Chart*. But it is more expressive powered by [[CUE]] language. Similar to [[helm]] chart, Addon itself is not a kind of CRD. Addon requires specific directory structure and file formats to group [[k8s]] resources.
+                    - `vela addon enable velaux --dry-run | kubectl apply -f -`
+                    - You can use [[kubectl]] to deploy OAM `*Definition`, [[k8s]] manifests and CRDs to replace Addon
+                    - For examples, deploying `cert-manager` addon is equivalent to deploy [[cert-manager]] [[helm]] chart and its CRDs such as `Issuer`
+                    - Imagine that addon is just an **alternative of [[helm]]/[[kustomize]]/[[helmfile]]**
+                    - So addon is mainly for *Operators* to extend platform features or CD, instead of PaaS end users
+                    - [Container Image CD | KubeVela](https://kubevela.io/docs/tutorials/webservice/)
+        - OAM Model
+            - Components
+                - E.g. [[Redis]]/[[MySQL]]/[[PostgreSQL]]/[[PHP]]
+                - a component is an **encapsulation** for workload type with user facing schematic pre-defined
+                - Is it similar to [[kustomize]] template?
+                    - 是的
+                    - 一个 PaaS 平台，Workloads 应该尽可能数量少且没有变动
+                    - 但是 Workload 对应的底层配置如 `StatefulSet` 又是那么的灵活，因此 Workload 不得不变得很「空」
+                    - Workload 太空了，要想实际使用，需要填写非常多配置项，但这需要不少专业的运维知识，怎么办呢？
+                    - 于是 Component 诞生了
+                    - Workload 继续保持「空」
+                    - Component 预定义大量配置，根据实际需求少部分配置留空（类似 JSON Schema，但更好用，并且可在 Web UI 里可视化查看编辑）。实际需求是多变的，所以要创建不同 Components，所以数量多
+                    - Component 简化了「单个服务」的运行，但一个产品可能由多个服务组合而成，于是有了 Application
+                    - Application 一方面组合多个 Components，定义了 Components 之间的依赖关系、交互方式 etc
+                    - Application 一方面为 Component 添加 Traits（Component 本身没有的功能）
+                        - 为什么不直接在 Component 定义而是用 Trait？
+                        - 第一，很多 Components 有重复性的需求，将其提取出来，一个 Trait 可以 attached 到多个 Components，这就是 Trait
+                        - 第二，增强 Component 的扩展性。毕竟 Component 考虑可能不周全，或者有了新技术例如 sidecar，挂载 Traits 可以扩展 Component 功能
+                    - Application 一方面面向普通用户（End Users），再次简化了应用部署（workflow/policy etc），消除了运维技能的要求
+                - An OAM platform always has countless component definitions maintained by different providers and users.
+                - A component MAY be deployed into multiple application scopes of different types
+            - Workload Types
+                - E.g. Deployment/StatefulSet/DaemonSet/Jod/Redis/AWD RDS
+                - an OAM platform normally has very limited number of workload definitions and they do not change a lot, but always has countless component definitions maintained by different providers and users.
+                - workload types are not extensible to end users (only to platform operators). Thus, end users MUST NOT be allowed to create new workload types
+                - Workload type is the key characteristic of a given component definition
+                - [spec/4.workload_types.md at master · oam-dev/spec](https://github.com/oam-dev/spec/blob/master/4.workload_types.md)
+            - Traits
+                - E.g. Scaling/Rollout/Traffic/Route/Metrics/Annotations/labels/CPU/RAM/env
+                - that augments a component workload instance with operational features
+                - You can attch multiple traits into one component, and same trait can be attached to different components
+            - Application Scopes
+                - 没看懂
+                - Application scopes are used to group components together into logical applications
+            - Application Configuration (i.e. Application)
+                - The _Application_ entity defines a list of components that will be instantiated once the application is deployed
+            - [spec/2.overview_and_terminology.md at master · oam-dev/spec](https://github.com/oam-dev/spec/blob/master/2.overview_and_terminology.md)
+
+- Objects
+    - Policy
+        - [Shared Resource | KubeVela](https://kubevela.io/docs/end-user/policies/shared-resource/)
+
+- Fundamentals
+    - PaaS
+        - AddOns is no key of PaaS. `Application` is.
+        - AddOns is not a kind of CRD. `Application` `*Definition` are.
+        - `vela` cli is the way to manage OAM CRDs
+        - VelaUX(PaaS Web UI) should be the way to manage OAM CRDs
+        - **`ComponentDefinition`** is the most important part for interactivity!
+        - Simply introducing 3rd CRDs into VelaUX, just write a new `ComponentDefinition` that contains the template of 3rd CRDs(e.g. [[CloudNativePG]] CRDs)
+        - Examples
+            - [Component Orchestration | KubeVela](https://kubevela.io/docs/end-user/workflow/component-dependency-parameter/)
+            - ![Application & Component](https://kubevela.io/assets/images/definition-cap-3c0184d9e1874305ac308e9b9deefe42.png)
+        - Ecosystem
+            - [Needs More Capabilities？ | KubeVela](https://kubevela.io/docs/end-user/components/more/)
+            - [UX of Definition | KubeVela](https://kubevela.io/docs/reference/ui-schema/)

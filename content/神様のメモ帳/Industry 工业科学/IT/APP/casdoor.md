@@ -1,0 +1,53 @@
+---
+tags:
+  - flag/License/Apache
+  - Label/Industry-工业科学/IT/APP/Server/Self-hosted
+  - flag/APP/Network/_Theme/Auth/Server/OAuth
+  - flag/APP/Network/_Theme/Auth/Server/OIDC
+  - flag/APP/Network/_Theme/Auth/Server/SSO
+  - flag/APP/Network/_Theme/Auth/Server/SAML
+  - flag/APP/Network/_Theme/Auth/Server/CAS
+  - flag/APP/Network/_Theme/Auth/Server/LDAP
+  - flag/APP/Network/_Theme/Auth/Server/SCIM
+  - flag/APP/Network/_Theme/Auth/Server/WebAuthn
+  - flag/APP/Network/_Theme/Auth/Server/TOTP
+  - flag/APP/Network/_Theme/Auth/Server/MFA
+  - flag/APP/Network/_Theme/Auth/Server/RADIUS
+---
+
+- Philosphy
+    - SSO, instead of LDAP
+        - LDAP 其实没什么用，尤其是不支持账户同步的话
+        - SSO 这种委托第三方的认证服务才是最佳方案，尤其是支持自动注册的话例如 [[alist]] 
+    - Auth, instead of permission
+        - SSO 主要负责认证，不负责权限管理
+        - 非要用 attributes 进行权限管理，可考虑 SAML attributes
+
+- References
+    - [LDAP missing attributes · Issue #2608 · casdoor/casdoor](https://github.com/casdoor/casdoor/issues/2608)
+
+- Con
+    - NOT Support account profile page
+    - NOT Support LDAP attributes
+        - [[casdoor]] 作为 LDAP Server 还是太弱了
+        - [User Properties](https://casdoor.org/docs/user/overview/)
+        - [LDAP missing attributes · Issue #2608 · casdoor/casdoor](https://github.com/casdoor/casdoor/issues/2608)
+
+- Objects
+    - Organization
+        - In casdoor, an organization is a container for users and applications
+    - Application
+        - a web service that needs to be protected by Casdoor
+            - e.g. [[alist]]
+            - e.g. [[warpgate]]
+        - Login URLs
+            - only `built-in/*` users can login from default web login page
+            - other orgnizations' application should login from the specific URL, such as `http://127.0.0.1:8000/login/oauth/authorize?client_id=xxxxx`
+    - User
+        - In Casdoor, a user can log into an application
+        - Profile
+            - To edit user profile by self, visit `https://casdoor.domain.com/account?access_token=xxxxxxxx&returnUrl=https://application.domain.com/`
+            - It requires application to integrate [[casdoor]] (just like [casbin's forum](https://forum.casbin.com/) doing)
+            - [Can a user visit his profile page via casdoor's home page? · Issue #2905 · casdoor/casdoor](https://github.com/casdoor/casdoor/issues/2905)
+    - Provider
+        - Delegate to other identity providers via OIDC, OAuth, and SAML etc

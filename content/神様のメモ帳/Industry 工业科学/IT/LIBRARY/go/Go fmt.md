@@ -1,0 +1,35 @@
+---
+tags:
+  - flag/LANGUAGE/Go
+  - Label/Industry-工业科学/IT/Library/StandardLibrary
+  - flag/Library/DataAccessLayer/Implement__/IO/Logger
+go: fmt
+format-verbs:
+  - "%v"
+  - "%+v"
+  - "%#v"
+  - "%T"
+  - "%%"
+  - "%t"
+  - "%d"
+  - "%b"
+  - "%o"
+  - "%x"
+  - "%X"
+  - "%U"
+  - "%c"
+  - "%q"
+  - "%f"
+  - "%F"
+  - "%e"
+  - "%E"
+  - "%g"
+  - "%G"
+  - "%s"
+  - "%p"
+  - +
+  -  
+  - "-"
+  - "#"
+  - "0"
+---

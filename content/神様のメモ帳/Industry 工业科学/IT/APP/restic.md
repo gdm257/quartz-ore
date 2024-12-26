@@ -1,0 +1,152 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Command/CLI
+  - flag/APP/File/CRUD/Read
+  - flag/APP/File/CRUD/Create
+scoop: restic
+apt: restic
+envvars:
+  - RESTIC_PASSWORD
+---
+
+## Brief
+
+- References
+    - [Restic Documentation](https://restic.readthedocs.io/en/stable/)
+
+- Installation
+    - [garethgeorge/backrest: Backrest is a web UI and orchestrator for restic backup.](https://github.com/garethgeorge/backrest)
+
+- Examples
+    - `restic self-update`
+    - `restic backup dir01 dir02 file01 file02 -r /path/to/repo`
+    - `restic restore id-xxx -r /path/to/repo -t ./`
+    - `restic snapshots --latest 2 -r ./repo`
+    - `restic unlock -r ./repo`
+    - `restic cache --cleanup`
+
+- CLI
+    - Usage
+        - `restic [options] <subcommand> [args]`
+    - Envs
+        - `RESTIC_PASSWORD` 密码
+    - Subcommands
+        - `help`
+        - `version`
+        - `self-update`
+        - `init`
+        - `key [flags] <subcommand> [key_id]`
+            - `list`
+            - `add`
+            - `remove`
+            - `passwd`
+        - `backup`
+            - `--no-scan`
+                - 判断文件变动 by file size，而非读取文件内容
+                - 默认会读取所有本地文件的内容，太耗 VPS 性能
+        - `unlock`
+            - 清空 locks 文件
+        - `snapshots`
+        - `check`
+            - 检查存储库和数据源一致性
+            - 检测是否有错误，费流量，基本用不着
+        - `cache [flags]`
+            - `--cleanup`
+            - `--max-age 30`
+                - 缓存默认保留 30 天
+            - 无 列出本地缓存
+            - `--no-size`
+        - `find [flags] <pattern>...`
+        - `ls [flags] <snapshot> [dir]...`
+            - 指定 dir 之后相当于 `rclone lsf`
+            - 缺少 dir 则递归列出所有文件
+            - `-l`
+        - `restore <snapshot> [falgs]`
+            - Snapshots filters
+            - `--host <host>`
+            - `--tag <tag>[,tag,...]`
+            - `--latest <num>`
+            - `--path <path>`
+                - 要求 snapshot 必须拥有此路径
+                - 可多次指定
+            - Files filters
+            - `--iinclude <pattern>`
+                - [[Windows]] 盘符写作 `/C` `/D` `/E` etc
+                - [[Windows]] 也必须使用 `/` 作路径分隔符
+            - `--iexclude <pattern>`
+            - Other flags
+            - `-t --target <dir>`
+                - 指定文件夹作为输出的根目录，丢进去模式
+            - `-i --ignore-case`
+        - `mount`
+        - `copy`
+            - 迁移
+            - 将一个 repo 的数据迁移到另一个 repo
+    - Options
+        - `-h --help`
+        - `-vvv --verbose=3`
+        - `-r --repo <repo>`
+            - local repo
+                - `/path/to/repo`
+            - [[rclone]] repo
+                - `rclone:<remote_name>:path/to/repo`
+        - `-p --passwd-file <file>`
+        - `--key-hint <key_id>`
+            - 指定用来加解密的密钥
+        - `--no-lock`
+            - 备份失败十有八九是 locks 的问题，各种玄学
+            - `backup` `--dry-run` 照样会锁，亲测
+        - `--no-cache`
+        - `--cleanup-cache`
+    - Patterns
+        - `/xxx`
+            - string 待匹配的字符串: 文件的绝对路径
+            - pattern 以 `/` 开头
+            - pattern 与 string 基础关系为 真・前缀匹配
+            - pattern 之后一个字符，要么是 `/`，要么是字符串末尾
+            - pattern 结尾的 `/` 会被忽略（strip），如果有
+        - `xxx`
+            - string 待匹配的字符串: 文件的绝对路径
+            - pattern 以非 `/` 的字符开头
+            - pattern 与 string 基础关系为 包含关系
+            - pattern 之后一个字符，要么是 `/`，要么是字符串末尾
+            - pattern 之前一个字符，一定是 `/`
+            - pattern 结尾的 `/` 会被忽略（strip），如果有
+        - `*` in `xxx`
+            - 匹配任意长度的任意字符，除了 `/`
+        - `**` in `xxx`
+            - 匹配任意长度的任意字符，包括 `/`
+        - `?` in `xxx`
+            - 匹配任意一个字符，除了 `/`
+
+- Philosophy
+    - 简单易用、现代
+    - 可靠
+    - 高性能
+    - 增量备份
+    - 不修改已有的备份文件
+
+- Fundamentals
+    - AES-256
+
+- Architecture
+    - 完美替代 Acronis 与屎一般的 Duplicity
+
+- Pro
+    - 支持 大体积仓库
+    - Support symlink
+        - Symlinks are archived as symlinks, restic does not follow them
+        - [Backing up — restic 0.17.3-dev documentation](https://restic.readthedocs.io/en/latest/040_backup.html#backing-up-special-items-and-metadata)
+
+- Test
+    - Performance
+        - 2C4G SSD
+        - 8.7G data
+        - Initial backup: 9 min 100% CPU
+    - 一个仓库内，达到 文件级/chunk级 去重。默认文件级去重？
+        - 当使用 Restic 备份数据的时候，如果遇到已经备份过的文件，无论是在当前备份数据中还是在先前备份数据中，它都可以确保文件的内容在存储库中仅存储一次。为此，通常会扫描每个文件的全部内容才可以。因为这种方式非常耗时，所以 Restic 还可以使用基于 文件元数据 的检测方式来确定文件自上次备份以来是否存在变动。如果是，则不会再次扫描文件。
+    - restic + [[alist]] + [[115]]
+        - 备份失败 405：请更新 alist，很可能是 115 相关 API 失效了
+    - [[cron]]
+        - 使用 crontab 定时任务来触发 restic 命令来进行数据的定时备份，一开始还运行的挺正常的，但是没几天之前设置的任务都开始不断报错。逐步排除发现，执行 backup 的时候并没有报错，但是执行 forget 的时候发报错
+        - Github issue#1450 发现是因为主仓库给锁了，这才使得删除数据的时候出现的错误。随即，执行如下命令，解决了该问题。

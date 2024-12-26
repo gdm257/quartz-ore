@@ -1,0 +1,90 @@
+---
+tags:
+  - flag/License/Freeware
+  - Label/Industry-工业科学/IT/APP/Server/Service
+  - flag/APP/DevOps/CI
+envvars:
+  - CI
+  - RUNNER_*
+  - RUNNER_ARCH
+  - RUNNER_DEBUG
+  - RUNNER_ENVIRONMENT
+  - RUNNER_NAME
+  - RUNNER_OS
+  - RUNNER_TEMP
+  - RUNNER_TOOL_CACHE
+  - GITHUB_*
+  - GITHUB_ACTION
+  - GITHUB_ACTION_PATH
+  - GITHUB_ACTION_REPOSITORY
+  - GITHUB_ACTIONS
+  - GITHUB_ACTOR
+  - GITHUB_ACTOR_ID
+  - GITHUB_API_URL
+  - GITHUB_BASE_REF
+  - GITHUB_ENV
+  - GITHUB_EVENT_NAME
+  - GITHUB_EVENT_PATH
+  - GITHUB_GRAPHQL_URL
+  - GITHUB_HEAD_REF
+  - GITHUB_JOB
+  - GITHUB_OUTPUT
+  - GITHUB_PATH
+  - GITHUB_REF
+  - GITHUB_REF_NAME
+  - GITHUB_REF_PROTECTED
+  - GITHUB_REF_TYPE
+  - GITHUB_REPOSITORY
+  - GITHUB_REPOSITORY_ID
+  - GITHUB_REPOSITORY_OWNER
+  - GITHUB_REPOSITORY_OWNER_ID
+  - GITHUB_RETENTION_DAYS
+  - GITHUB_RUN_ATTEMPT
+  - GITHUB_RUN_ID
+  - GITHUB_RUN_NUMBER
+  - GITHUB_SERVER_URL
+  - GITHUB_SHA
+  - GITHUB_STEP_SUMMARY
+  - GITHUB_TRIGGERING_ACTOR
+  - GITHUB_WORKFLOW
+  - GITHUB_WORKFLOW_REF
+  - GITHUB_WORKFLOW_SHA
+  - GITHUB_WORKSPACE
+vars:
+  - env
+  - github
+  - vars
+  - job
+  - jobs
+  - steps
+  - runner
+  - secrets
+  - strategy
+  - matrix
+  - needs
+  - inputs
+---
+
+- Objects
+    - Same as [[go-task|task]]
+        - Workflow == `taskfile.yaml`
+        - Jobs == `tasks` of taskfile
+            - Every job is running in a isolated environment
+            - [[go-task]] tasks run in the same environment
+        - Steps == `cmds` in task
+        - Triggers == `preconditions`/`sources`/`generates`/`status`
+            - but for all `tasks`
+    - Action
+        - An action likes a virtual environment
+        - virtual environment is job level
+        - Every venv likes an isolated [[Docker]] container
+        - Different jobs can not DIRECTLY interact with each other
+        - To share data between jobs, use [[artifact|actions/upload-artifact]] and [[artifact|actions/download-artifact]]
+    - Output
+        - Define output to pass info from one job to another
+        - [Passing information between jobs - GitHub Docs](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/passing-information-between-jobs)
+    - Context
+        - Share data natively
+        - [Accessing contextual information about workflow runs - GitHub Docs](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/accessing-contextual-information-about-workflow-runs)
+    - Envvar
+        - [Store information in variables - GitHub Docs](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables)

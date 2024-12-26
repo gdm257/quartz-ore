@@ -1,0 +1,41 @@
+---
+tags:
+  - flag/License/MIT
+  - Label/Industry-工业科学/IT/Library/Plugin/Ansible/Role
+github: CyVerse-Ansible/ansible-k3s
+ansible-galaxy-role: CyVerse-Ansible.ansible_k3s
+vars:
+  - K3S_DOCKER_ENABLE
+  - K3S_GPU_ENABLE
+  - K3S_GPU_TIMESLICE_ENABLE
+  - K3S_GPU_TIMESLICE_NUM
+  - K3S_NVIDIA_USE_GPU_OPERATOR
+  - K3S_NVIDIA_GPU_OPERATOR_DRIVER
+  - K3S_NVIDIA_GPU_OPERATOR_TOOLKIT
+  - K3S_TRAEFIK_ENABLE
+  - K3S_FLANNEL_BACKEND
+  - K3S_CALICO_ENABLE
+  - K3S_CLUSTER_TOKEN
+  - K3S_CLUSTER_CIDR
+  - K3S_VERSION
+  - K3S_IS_MULTINODE
+  - K3S_MASTER_INSTALL
+  - K3S_MASTER_IP
+  - K3S_MASTER_PORT
+  - K3S_POSTGRESQL_ENABLE
+  - K3S_POSTGRESQL_INSTALL
+  - K3S_POSTGRESQL_HOST
+  - K3S_POSTGRESQL_PORT
+  - K3S_POSTGRESQL_DB
+  - K3S_POSTGRESQL_USER
+  - K3S_POSTGRESQL_PASS
+  - K3S_FIREWALL_MANAGE
+  - K3S_FIREWALL_ADD_PORTS
+  - K3S_REGISTRIES_MIRRORS
+---
+
+- Idea
+    - This role will create a [[k3s]] standalone or cluster
+
+- Con
+    - only 1 master is supported

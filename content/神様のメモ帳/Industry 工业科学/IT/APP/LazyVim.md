@@ -1,0 +1,116 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Plugin/Vim
+github: LazyVim/LazyVim
+vim-commands:
+  - :LazyExtras
+  - :=
+  - :AddProject
+  - :Codeium
+  - :LazyRoot
+vim-motions:
+  - s{char}{char}
+vim-operators:
+  - gc
+---
+
+- Idea
+    - 一套 [[neovim]] 配置，真正做到了「开箱即用」「最佳实践」「终极形态」「返璞归真」
+
+- Fundamentals
+    - [[LazyVim]] is just a set of [[neovim]] plugins and configs
+
+- Keymaps
+    - [⌨️ Keymaps | LazyVim](https://www.lazyvim.org/keymaps)
+    - [Keymaps | LazyVim](https://www.lazyvim.org/configuration/keymaps)
+    - [Core Plugins | LazyVim](https://www.lazyvim.org/plugins)
+    - [Extras | LazyVim](https://www.lazyvim.org/extras)
+    - Modes
+        - `n`: nomal mode
+        - `i`: insert mode
+        - `x`: visual mode
+        - `s`: select mode
+        - `c`: command-line mode
+        - `o`: operator-pending mode
+    - Entrypoint
+        - `:` -> `<cmd>`
+        - `:Dashboard` -> [[LazyVim]] dashboard
+        - `<space>` -> `<leader>`
+        - `\`(backslash) -> `<localleader>`
+    - Cmdline
+        - `<C-r>` -> select register and paste
+    - LSP
+        - `K` -> hover (docs)
+    - Help System ([which-key](https://github.com/folke/which-key.nvim) prompts)
+        - Keymaps
+            - double click and hold the left mouse button for the second time -> [[Vim]] keymaps
+            - `<leader>` -> global keymaps
+            - `<leader>?` -> buffer-scoped keymaps
+            - `<leader>sk` -> keymaps
+            - `?` -> buffer-scoped keymaps
+                - Only some buffers support this
+                - E.g. neotree plugin's buffer
+            - `<localleader>` -> localleader keymaps
+            - `:Lazy` `D` -> lazy handlers
+                - keymaps from lazy packages not be loaded
+        - Motions
+            - `!` or `<any operator>` -> motions
+        - Operators
+            - `:help operator` -> some [[Vim]] operators
+        - Commands
+            - `:<tab>` `:foobar<tab>` -> commands
+            - `<leader>sC` -> fuzzy search commands
+            - `:command` -> command source code location
+            - `:scriptnames` -> command source code location
+        - Autocmds
+            - `<leader>sa` -> fuzzy search autocmds
+        - Functions
+            - `:function <tab>` -> functions
+        - Options
+            - `<leader>so` -> fuzzy search options
+            - `:help option<tab>`
+            - `:help help-buffer-options`
+
+- Configuration
+    - [Lazyvim 从零开始配置 - Flyan Lu's Blog](https://fanlumaster.github.io/2023/11/25/Lazyvim-configure-from-scratch/)
+    - `~/.config/nvim/`
+        - `init.lua`
+            - [[neovim]] config entrypoint
+        - `lazyvim.json`
+            - enabled [[LazyVim]] extras
+            - extra == [[neovim]] plugins + [[Lua]] configuration
+        - `lazy-lock.json`
+            - [[lazy.nvim]] lockfile to packages(plugins)
+        - `config/`
+            - `autocmds.lua`
+            - `keymaps.lua`
+            - `lazy.lua`
+            - `options.lua`
+        - `lua/`
+            - `plugins/*.lua`
+                - [[lazy.nvim]] plugin system
+                - Extra customization and [[neovim]] plugins
+                - [feature: Improve documentation (for formatting) for newbies · LazyVim/LazyVim · Discussion #3144](https://github.com/LazyVim/LazyVim/discussions/3144)
+    - `~/.config/nvim-data`
+        - `lazy/`
+            - `LazyVim/lua/lazyvim/`
+                - `plugins/extras/*/*.lua`
+                    - Extras
+
+- Pro
+    - Friendly
+        - 尝试了一番 DOOM Emacs，发现还是 [[neovim]] **简单**、**实用**，资料齐全
+        - 唯一遗憾就是 vim commands 没有 [[VSCode]] command palette 那么好用
+
+- Con
+    - NOT IDE
+        - [[LazyVim]] 或许是最佳 [[Vim]]，CLI 的最佳选择，但作为 IDE 仍有不少痛点
+    - ~~NOT Support command palette~~
+        - [[Vim]]/[[neovim]]
+            - `<tab>` in command mode to list commands
+                - Support prefix matches
+                - NOT Support fuzzy search
+            - `<ctrl>f` in command mode to list history commands in a new buffer
+        - [[LazyVim]]
+            - `<leader>sC` fuzzy search all commands
+        - [Fuzzy search all possible complete commands? : r/neovim](https://www.reddit.com/r/neovim/comments/12589xh/fuzzy_search_all_possible_complete_commands/)

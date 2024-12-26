@@ -1,0 +1,77 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Plugin/Vim
+files:
+  - lazy.lua
+  - pkg.json
+  - "*-scm-1.rockspec"
+vim-commands:
+  - :Lazy
+---
+
+- Idea
+    - Package manager for [[neovim]]
+
+- Philosophy
+    - Lazy load
+
+- API
+    - Plugin
+        - [🔌 Plugin Spec | lazy.nvim](https://lazy.folke.io/spec)
+        - `return {}`
+            - Source
+            - `[1]: string?`
+                - [[git]] repo url/dir
+                - e.g. `user/repo` for [[GitHub]] repo
+            - `dir: string?`
+            - `url: string?`
+            - `name: string?`
+            - `dev: boolean?`
+            - `dependencies: table`
+                - `[n]: string`
+                - E.g. `{ 'kkharji/sqlite.lua' }`
+            - Versioning
+            - `branch: string?`
+            - `tag: string?`
+            - `commit: string?`
+            - `version: string?`
+            - `pin: boolean?`
+            - `submodules: boolean?`
+            - Loading
+            - `enabled: boolean? | fun():boolean`
+            - `cond: boolean? | fun(LazyPlugin):boolean`
+            - `priority: number? = 50`
+            - Lazy Loading
+            - `lazy: boolean?`
+            - `keys: LazyKeysSpec[] | fun(self:LazyPlugin, keys:string[]):(string | LazyKeysSpec)[]`
+                - `[1]: string` keybinding(lhs)
+                - `[2]: string | fun()` callback
+                - `mode: string | string[]`
+                - `ft: string | string[]`
+                - any other option valid for `vim.keymap.set`
+                - [Lazy Loading | lazy.nvim](https://lazy.folke.io/spec/lazy_loading#%EF%B8%8F-lazy-key-mappings)
+            - `cmd: string[] | fun(self:LazyPlugin, cmd:string[]):string[]`
+            - `event`
+            - `ft`
+                - Lazy-load on filetype
+            - Setup
+            - `config: true | fun(LazyPlugin, opts:table)`
+                - Always use `opts` instead of `config` when possible
+                - `config` is almost never needed
+                - Almost all 3rd [[Vim]]/[[neovim]] plugin contains a `reqire('plugin').setup(opts)` function to setup options
+                - So [[lazy.nvim]] provides a default implementation to `require(MAIN).setup(opts)` and wraps as `config` & `opts`
+            - `opts: table | fun(LazyPlugin, opts:table)`
+                - The table will be passed to the `Plugin.config()` function
+                - Used to `require(MAIN).setup(opts)` by default
+            - `main: string?`
+                - Entrypoint module for `config` or `opts`
+                - Default to `MAIN` module automatically based on the plugin's **name**
+            - `init: fun(LazyPlugin)`
+                - Hook before [[Vim]] plugin startup
+            - `build: fun(LazyPlugin) | string | false | table`
+                - Hook when a plugin is installed or updated
+            - Advanced
+            - `optional: boolean?`
+            - `specs: LazySpec`
+            - `module: false?`
+            - `import: string?`

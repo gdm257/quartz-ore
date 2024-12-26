@@ -1,0 +1,33 @@
+---
+---
+
+- Description
+    - 人称代词 本质就是一个 名词
+
+- 人称代词
+    - 作 动作的发出者
+        - I
+        - we
+        - you
+        - he
+        - she
+        - it
+        - they
+    - 作 动作的承受者
+        - me
+        - us
+        - you
+        - him
+        - her
+        - it
+        - them
+    - 所有格
+        - mine
+            - mine == my sth.
+            - 所谓所有格，等价于「谁谁谁的什么东西」，这里的东西请根据上下文进行代换
+        - ours
+        - yours
+        - his
+        - hers
+        - its
+        - theirs

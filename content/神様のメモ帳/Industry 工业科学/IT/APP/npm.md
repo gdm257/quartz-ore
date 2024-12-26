@@ -1,0 +1,145 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Command/CLI
+  - flag/APP/DevOps/PackageManagement
+  - flag/APP/DevOps/PackingTool/PrivateFormatPackingTool
+  - flag/LANGUAGE/JS
+  - flag/LANGUAGE/TypeScript
+  - flag/APP/DevOps/Scaffold_Boilerplate
+frontmatter-as-page:
+  - npm
+  - key-package.json
+  - npm-create
+files:
+  - package.json
+  - package-lock.json
+  - .npmrc
+scripts:
+  - preinstall
+  - install
+  - postinstall
+  - preuninstall
+  - uninstall
+  - postuninstall
+json-schema:
+  - http://json.schemastore.org/package.json
+key-package.json:
+  - name
+  - version
+  - os
+  - cpu
+  - engine
+  - devEngines
+  - main
+  - exports
+  - browser
+  - private
+  - publishConfig
+  - files
+  - bin
+  - man
+  - dependencies
+  - devDependencies
+  - optionalDependencies
+  - peerDependencies
+  - peerDependenciesMeta
+  - bundleDependencies
+  - overrides
+  - license
+  - homepage
+  - repository
+  - bugs
+  - funding
+  - keywords
+  - description
+  - author
+  - contributors
+  - directories
+  - scripts
+  - config
+---
+
+## Brief
+
+- Ecosystem
+    - [RunKit + npm](https://npm.runkit.com/)
+
+- Configuration
+    - [package.json | npm Docs](https://docs.npmjs.com/cli/v10/configuring-npm/package-json?v=true)
+    - `package.json`
+        - 最初只是 [[npm]] 的配置文件，后成了通用配置
+        - Package Resolution
+            - `name`
+                - used for `import` `require`
+            - `version`
+            - `os: string[]`
+            - `cpu: string[]`
+            - `engine: dict`
+            - `devEngines: dict`
+            - `main`
+                - entrypoint for [[Node.js]] package
+                - 应该指向编译出的 [[JavaScript|JS]] 文件
+                - E.g. `main: index.js`
+            - `exports`
+                - multiple entrypoints
+                - 应该指向编译出的 [[JavaScript|JS]] 文件
+            - `browser`
+                - E.g. `browser: index.browser.js`
+                - For browser environment, use `browser` instead of `main`
+        - Publish & Install
+            - `private: bool`
+                - whether to publish
+                - [[npm]] will refuse to publish it by `false`
+            - `publishConfig`
+            - `files: string[]`
+                - `main` `exports` 用于 [[Node.js]] 模块解析（即「如何解析」已有文件）
+                - `files` 用于定义「什么是已有文件」
+                - `files` will be included when this package as a dependency
+                - `files` 不影响编译
+            - `bin: dict`
+                - Auto copy binary files (from `files`) into `node_modules/.bin` when install this package
+                - [go-task/go-npm: Distribute and install Go binaries via NPM](https://github.com/go-task/go-npm)
+            - `man: string | string[]`
+                - Read The Fucking Manual file(s)
+                - Auto copy manual files (from `files`) into [[man]] directory when install this package
+        - Dependencies
+            - `dependencies`
+            - `devDependencies`
+            - `optionalDependencies`
+                - build failures do not cause installation to fail
+            - `peerDependencies`
+                - In some cases, you want to express the compatibility of your package with a host tool or library, while not necessarily doing a `require` of this host
+                - 不会直接或间接调用的 packages
+                - This is usually referred to as a _plugin_
+                - E.g. 声明插件对框架的兼容性
+                - [tailwindcss-typography/package.json at main · tailwindlabs/tailwindcss-typography](https://github.com/tailwindlabs/tailwindcss-typography/blob/main/package.json)
+            - `peerDependenciesMeta: map[string]any`
+                - Provide more properties except version for `peerDependencies`
+                - E.g. `optional: true`，让 [[npm]] 不自动安装这些依赖
+            - `bundleDependencies`
+                - embedded vendor when publish
+            - `overrides`
+                - 重写依赖的依赖？
+                - E.g. upgrade deps for security
+            - `workspaces`
+                - Similart to [[pnpm]]'s `pnpm-workspaces.yaml`
+                - Workspaces 只负责 packages 之间可以直接调用，即把包安装到 `node_modules`；而不负责哪些 packages 应该发布、如何发布
+                - Monorepo 中 packages 的发布是个问题。所以才需要使用 [[pnpm]] 甚至是 [[Lerna]]、[[Nx]] 工具链
+        - Infomation
+            - `license`
+            - `homepage`
+            - `repository`
+            - `bugs: dict`
+            - `funding: dict`
+            - `keywords: string[]`
+            - `description`
+            - `author`
+            - `contributors: dict[]`
+            - `directories: dict`
+                - Describe the role of directory
+        - Task Runner
+            - `scripts: dict`
+            - `config: dict`
+            - Alternatives
+                - [[go-task|task]]
+                - [[make]]

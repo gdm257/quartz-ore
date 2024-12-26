@@ -1,0 +1,30 @@
+---
+tags:
+  - flag/License/BSD
+  - flag/LANGUAGE/Python
+  - Label/Industry-工业科学/IT/Library/Plugin/Django/app/commands
+  - Label/Industry-工业科学/IT/Library/Plugin/Django/app/models
+github: jazzband/django-dbbackup
+pip: django-dbbackup
+django-apps:
+  - dbbackup
+settings:
+  - DBBACKUP_STORAGE
+  - DBBACKUP_STORAGE_OPTIONS
+  - DBBACKUP_DATABASES
+  - DBBACKUP_TMP_DIR
+  - DBBACKUP_TMP_FILE_MAX_SIZE
+  - DBBACKUP_CLEANUP_KEEP
+  - DBBACKUP_CLEANUP_KEEP_MEDIA
+  - DBBACKUP_CLEANUP_FILTER
+  - DBBACKUP_DATE_FORMAT
+  - DBBACKUP_HOSTNAME
+  - DBBACKUP_FILENAME_TEMPLATE
+  - DBBACKUP_MEDIA_FILENAME_TEMPLATE
+  - DBBACKUP_GPG_ALWAYS_TRUST
+  - DBBACKUP_GPG_RECIPIENT
+  - DBBACKUP_SEND_EMAIL
+  - DBBACKUP_SERVER_EMAIL
+  - DBBACKUP_ADMINS
+  - DBBACKUP_EMAIL_SUBJECT_PREFIX
+---

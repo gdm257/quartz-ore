@@ -1,0 +1,73 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Server/Self-hosted
+  - flag/APP/Layer/k8s/AddOns/CNI
+  - flag/APP/Layer/k8s/AddOns/Service-Proxy
+  - flag/APP/Layer/k8s/AddOns/IngressController
+  - flag/APP/Layer/k8s/AddOns/GatewayAPI
+  - flag/APP/Layer/k8s/AddOns/ServiceMeshInterface
+k8s-ingressClassNames:
+  - cilium
+---
+
+- Deps
+    - [[cilium]] 如此复杂的软件，兼容性却很好，对于能正常运行 [[k8s]] 的机器，基本没什么依赖，除了要求 [[Linux]] kernel 5.4+（REHL 8.6、Debian 11、Ubunt 20.04、SUSE 15.4）之外
+    - [System Requirements — Cilium 1.16.2 documentation](https://docs.cilium.io/en/stable/operations/system_requirements/#admin-system-reqs)
+
+- Installation
+    - TL;DR
+        - 安装、升级、卸载请用官方 [[helm]] chart
+        - `values.yaml` 有 3500+ 行，全默认也能用（只要 Pod CIDR 没问题）
+        - 在这里只说最重要的
+        - `ipam.clusterPoolIPv4PodCIDRList`
+            - 默认 `[10.0.0.0/8]`
+            - 可能跟 VPS 默认自带的 `eth0` 有冲突，这会导致无法连接到其他 nodes，甚至更严重的网络故障
+            - 务必在安装 [[cilium]] 之前用 `ip route` 或 `ip addr | grep inet` 检查网段是否已被占用（有重叠）
+            - 如果冲突，手动设置新的私有网段，例如 `--set ipam.clusterPoolIPv4PodCIDRList[0]=100.127.0.0/16`
+            - 安装 [[MetalLB]] 的网段也同理，不能跟已占用网段冲突，[[MetalLB]] 和 [[cilium]] 网段也不能有冲突
+    - Pod CIDR
+        - `ipam.clusterPoolIPv4PodCIDRList` & `ipam.operator.clusterPoolIPv4PodCIDRList` with `[10.0.0.0/8]` by default
+        - If your node network is in the same range you will lose connectivity to other nodes. All egress traffic will be assumed to target pods on a given node rather than other nodes.
+        - You can solve it in two ways:
+            - Explicitly set `clusterPoolIPv4PodCIDRList` to a non-conflicting CIDR, Where [[helm]] chart values are `ipam.clusterPoolIPv4PodCIDRList`
+            - Use a different CIDR for your nodes
+        - [IP Address Management (IPAM) — Cilium 1.16.2 documentation](https://docs.cilium.io/en/stable/network/concepts/ipam/)
+        - [Cluster Scope (Default) — Cilium 1.16.2 documentation](https://docs.cilium.io/en/stable/network/concepts/ipam/cluster-pool/)
+    - Node CIDR size
+        - `ipam.clusterPoolIPv4MaskSize: 24` by default
+        - In default IPAM mode, every node can hold only one CIDR of Mask
+        - which means every node can allocate 255 IPs for 255 Pods maximum
+    - Node IP
+        - `kubectl get nodes -o wide`
+        - ensure that each node IP is known via `INTERNAL-IP` or `EXTERNAL-IP`
+    - `kube-proxy`
+        - `kubeProxyReplacement=true` would be equivalent to
+            - `--set socketLB.enabled=true`
+            - `--set nodePort.enabled=true`
+            - `--set externalIPs.enabled=true`
+            - `--set hostPort.enabled=true`
+            - [Kubernetes Without kube-proxy — Cilium 1.16.2 documentation](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kube-proxy-hybrid-modes)
+    - [[k3s]]
+        - 停止 [[k3s]] 集群之前，务必删除 `cilium_host` `cilium_net` `cilium_vxlan` 网络接口、`cilium` [[iptables]] 规则，否则服务器会失去联网能力
+        - [Basic Network Options | K3s](https://docs.k3s.io/networking/basic-network-options?cni=Cilium)
+    - [Installation using Helm — Cilium 1.16.2 documentation](https://docs.cilium.io/en/stable/installation/k8s-install-helm/)
+    - [Kubernetes Without kube-proxy — Cilium 1.16.2 documentation](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/)
+
+- Test
+    - Clenup
+        - 云服务器（硬件）故障，系统硬关机，再开机的时候网络果然用不了了
+            - 典型表现，一些 Pods 总是启动失败
+            - [[CoreDNS]] 只能响应集群内私有域名，不能响应公网域名
+        - [[ip]] 删除 [[cilium]] 相关 Network Interfaces
+        - [[iptables]] 删除 [[cilium]] 相关 Rules
+        - [[kubectl]] 重启 [[cilium]] 相关 Pods
+            - `cilium status` 有报错
+        - [[kubectl]] 重启其他所有 Pods
+            - `cilium status --wait` 无报错
+    - [[k3s]]
+        - cilium 安装很简单，[[helm]] 一行命令搞定
+        - [[k3s]] 集群要注意的是，在正常停止集群（`sudo systemctl stop k3s`）之前，必须删除 cilium 网卡和 iptables 规则。建议手动修改 [[systemd]] service 文件
+        - [Basic Network Options | K3s](https://docs.k3s.io/networking/basic-network-options?cni=Cilium#custom-cni)
+    - CIDR not refresh
+        - Even after running the Helm upgrade, nothing changed. So, we triggered a node scale-up and lucked out — the new spawned node was created with a subnet from a new CIDR range
+        - [Learned it the hard way: Don’t use Cilium’s default Pod CIDR | by Isala Piyarisi | Medium](https://medium.com/@isalapiyarisi/learned-it-the-hard-way-dont-use-cilium-s-default-pod-cidr-89a78d6df098)

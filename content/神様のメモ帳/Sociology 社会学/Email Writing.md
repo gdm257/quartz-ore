@@ -1,0 +1,34 @@
+---
+tags:
+  - Label/Linguistics-语言学/English/Resource
+---
+
+- References
+    - [如何写好商务英文邮件？ - 知乎](https://www.zhihu.com/question/20870189)
+    - [为英文信件选用合适的结束语 | 始终](https://liam.page/2022/10/29/Yonex-AX100zz/)
+
+- Architecture
+    - Title
+    - Content
+        - Call
+            - `Dear <last_name>,`
+            - `Dear Mr. <last_name>,`
+            - `Dear Ms. <last_name>,`
+            - `Dear Professor <last_name>,`
+            - `Dear Sir/Madam,`
+            - `Hello there,`
+        - Introduction (Optional)
+            - `I hope this email finds you well.`
+        - Details
+            - be polite
+            - as simple as possible
+        - Ending
+            - Reply (Optional)
+                - `If you have any further questions, please feel free to contact me.`
+                - `Thank you for your attention to this matter. I look forward to hearing from you soon.`
+            - Bless
+                - `Best wishes,`
+                - `Best Regards,`
+                - `Sincerely,`
+            - Signature
+                - `<my_fullname>`

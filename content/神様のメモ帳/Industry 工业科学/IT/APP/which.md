@@ -1,0 +1,14 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Command/CLI
+  - flag/APP/File/CRUD/Read
+commands:
+  - which
+---
+
+- Alternatives
+    - [[command]]
+
+- Con
+    - NOT Support [[Bash]] `if`
+        - recommend `if command -v <cmd>; then ...`

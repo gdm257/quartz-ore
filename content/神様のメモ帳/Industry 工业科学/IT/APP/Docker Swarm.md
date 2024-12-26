@@ -1,0 +1,166 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Command/CLI
+  - Label/Industry-工业科学/IT/APP/Plugin/Docker
+  - flag/APP/DevOps/CD
+docker-labels:
+  - com.docker.stack.namespace
+  - com.docker.swarm.node.id
+  - com.docker.swarm.service.id
+  - com.docker.swarm.service.name
+  - com.docker.swarm.task
+  - com.docker.swarm.task.id
+  - com.docker.swarm.task.name
+docker-service-labels:
+  - com.docker.stack.image
+hosts:
+  - <stack>_<service>
+  - <service>
+docker-constraints:
+  - node.platform.os
+  - node.platform.arch
+  - node.role
+  - node.id
+  - node.hostname
+  - node.labels.<label>
+  - engine.labels.<label>
+  - disktype
+---
+
+- Idea
+    - 把若干台 Docker 主机抽象为一台 Machine，并且通过一个入口统一管理这些 Docker 主机上的各种 Docker 资源
+
+- Alternatives
+    - [[k3s]]
+    - [[nomad]]
+    - 虽然 [[k8s]] 才是集群领域的老大，并且遥遥领先，但很多小场景并不适合 [[k8s]]
+    - [[CapRover]] 生态差，还不如 [[Docker Swarm]]
+
+- Architecture
+    - Manager Nodes
+        - Support multiple swarm managers
+        - ONLY ONE node can be leader
+    - Worker Nodes
+
+- Pro
+    - Compatible with [[docker-compose]]
+    - Lightweight
+        - Support 512MB RAM
+    - The simplest clustering
+    - Enable `br` encoding by default
+        - `br` is created by [[Google]] and better than `gzip`
+    - Support running service in master
+        - [[k8s]] NOT Support running container in control plane
+    - Support configs
+        - [Store configuration data using Docker Configs | Docker Docs](https://docs.docker.com/engine/swarm/configs/)
+
+- Con
+    - NOT Support dynamic volumes like [[k8s]] PV/PVC
+        - Stateful service NOT supports scale horizontally
+        - Remote volume NOT supports scale horizontally if there is no optimization such as chunks, lock-free
+    - Stateful service with local volume NOT supports scale horizontally
+        - [Persistent Apps · CapRover](https://caprover.com/docs/persistent-apps.html)
+    - NOT Support restart for container exited 0
+        - 设计如此，本质是 process 自己的问题，异常退出就别返回 0
+
+- Fundamentals
+    - Network
+        - host network
+            - 为了让集群对外提供服务，[[Docker Swarm]] 必须监听宿主机自带的网卡（一般拥有公网 IP）
+            - 如何实现？service 指定 `ports` 即可。不单单会监听 cluster 相关 networks，还会也应该要去监听主机网卡的端口。这样才能「将对宿主机的访问（外部访问）路由到 clluster network，由 cluster 处理请求」
+        - `docker_gwbridge`
+            - docker swarm 自动创建的 `bridge` 类型的 network，辅助性质，无视即可
+            - 什么叫辅助？就像 `none` `host` networks 那样，用于 docker 自己的通信，用户不需要知道
+        - `ingress`
+            - [[Docker Swarm]] 自动创建的 `overlay` 类型的 network
+            - default network for service in swarm cluster
+            - Support communication between services in cluster
+            - 就像 [[docker-compose]] 运行 service 时，未显式指定 `networks` 的 service 会自动加入 `bridge` network。`bridge` 里的 services 可以互相访问
+            - [[Docker Swarm]] 运行 service 时，未显式指定 `networks` 的 service 会自动加入 `ingress` network。`ingress` 里的 services 可以互相访问
+            - Docker Swarm 内置了 load balancer，访问 Docker Swarm 集群任意节点都可以访问到该服务 e.g. `*:8080->80/tcp`
+        - [Docker Swarm 学习笔记（六）： 暴露 Docker Swarm 集群中的服务至外部 - 学习笔记](https://www.hty1024.com/archives/dockerswarm-xue-xi--liu--bao-lu-dockerswarm-ji-qun-zhong-de-fu-wu-zhi-wai-bu)
+        - [Swarm模式端口路由网 · Docker Swarm 深入浅出](https://holynull.gitbooks.io/docker-swarm/content/kai-shi-shi-yong-swarm/swarmmo-shi-duan-kou-lu-you.html)
+
+- Installation
+    - [[Docker|dockerd]] comes with [[Docker Swarm]]
+
+- CLI
+    - `docker swarm init`
+    - `docker swarm join`
+    - `docker network create --driver overlay --attachable cluster-network`
+    - `docker service` with cli options
+    - `docker stack deploy` with `docker-compose.yaml`
+    - `docker compose config | grep -v ^name | sed 's/published: "\([0-9]\+\)"/published: \1/g' | sed 's/cpus: \(.\+\)/cpus: "\1"/g' | docker stack deploy -c - $(basename $(pwd))`
+    - [Docker Stack Deploy doesn't resolve environment variables with default value like Docker Compose does - Server Fault](https://serverfault.com/questions/1115847/docker-stack-deploy-doesnt-resolve-environment-variables-with-default-value-lik)
+
+- Configuration
+    - [Compose Deploy Specification | Docker Docs](https://docs.docker.com/compose/compose-file/deploy/)
+    - [Docker Stack Deploy doesn't resolve environment variables with default value like Docker Compose does - Server Fault](https://serverfault.com/questions/1115847/docker-stack-deploy-doesnt-resolve-environment-variables-with-default-value-lik)
+    - `services.<service_name>.deploy: Dict`
+        - `mode: "replicated"|"global"`
+        - `replicas: int`
+        - `endpoint_mode: "vip"|"dnsrr"`
+        - `labels: Dict[str, str]`
+            - service labels
+        - `placement: Dict`
+            - `preferences: List[Dict]`
+                - e.g. `spread: node.role==worker`
+            - `constraints: List|Dict`
+                - `disktype=ssd`
+                - `node.role == manager`
+                - `node.role != worker`
+                - `node.id`
+                - `node.hostname`
+                - `node.platform.os`
+                - `node.platform.arch`
+                - `node.labels`
+                - `engine.labels`
+        - `resources: Dict`
+            - `limits: Dict`
+                - `cpus: str`
+                    - e.g. `"0.50"` 0.5 核
+                - `memory: str`
+                    - e.g. `512M`
+                - `pids: int`
+            - `reservations: Dict`
+                - limit 最大值，reservation 最小值
+                - `cpus: str`
+                - `memory: str`
+                - `devices`
+                    - `capabilities`
+                        - `gpu`
+                        - `tpu`
+                    - `driver`
+                    - `count`
+                    - `device_ids`
+                    - `options`
+        - `restart_policy`
+            - `condition: "any"|"none"|"on-failure"`
+            - `delay: str`
+            - `max_attempts: int = 0`
+            - `window: str`
+        - `rollback_config`
+            - `parallelism: int`
+            - `delay: str`
+            - `failure_action: "pause"|"continue"|"rollback"`
+            - `monitor: str`
+            - `max_failure_ratio`
+            - `order: "stop-first"|"start-first"`
+        - `update_config`
+            - `parallelism: int`
+            - `delay: str`
+            - `failure_action: "pause"|"continue"|"rollback"`
+            - `monitor: str`
+            - `max_failure_ratio`
+            - `order: "stop-first"|"start-first"`
+
+- Data
+    - Volumes
+        - network 可以 external，volume 自然也可以是 S3/NFS/rclone etc
+        - 缺点在于，如果需要读写锁，那么该服务无法水平扩展，因为 volume 只有一份
+        - 平时用的 local volume 只会将数据存储在运行 service 的 node 上，无法 nodes 之间共享
+        - 需要用 volume 持久化数据的，称为 stateful service，反之为 stateless service
+        - 无状态化的最常用手段有 env、database、OSS
+        - [Swarm 如何存储数据？- 每天5分钟玩转 Docker 容器技术（103） - CloudMan - 博客园](https://www.cnblogs.com/CloudMan6/p/8000906.html)
+        - [openebs/openebs: Most popular & widely deployed Open Source Container Native Storage platform for Stateful Persistent Applications on Kubernetes.](https://github.com/openebs/openebs)
+        - [Stateless with Persistent data · CapRover](https://caprover.com/docs/stateless-with-persistent-data.html)

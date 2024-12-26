@@ -1,0 +1,122 @@
+---
+tags:
+  - flag/APP/Layer/k8s/Manager
+  - flag/LANGUAGE/KCL
+  - Label/Industry-工业科学/IT/APP/Command/CLI
+commands:
+  - helmfile
+scoop: helmfile
+functions:
+  - env
+  - requireEnv
+  - exec
+  - envExec
+  - readFile
+  - readDir
+  - readDirEntries
+  - toYaml
+  - fromYaml
+  - setValueAtPath
+  - get
+  - getOrNil
+  - tpl
+  - required
+  - fetchSecretValue
+  - expandSecretRefs
+  - include
+---
+
+- Idea
+    - Do not `helm install ...`, Do `helmfile apply` with `helmfile.yaml`
+
+- Philosophy
+    - Infrastructure as Code
+
+- Alternatives
+    - [[helm]]
+    - [[helm]] executed by [[go-task|task]]
+    - [[ArgoCD]]/[[FluxCD]]/[[k3s]] helm controller + CRD
+
+- Pro
+    - Support hooks
+        - Call [[kubectl]]
+        - For [[kustomize]]
+    - Support environment
+        - Similar to [[kustomize]], [[helmfile]] introduces `environments` for different scenarios
+    - Support setting values
+        - `set` and `values` are convenient
+    - Support HCL
+
+- Configuration
+    - [Best Practices Guide - helmfile](https://helmfile.readthedocs.io/en/latest/writing-helmfile/)
+    - `helmfile.yaml`
+        - [[docker-compose]]'s core is `compose.yaml`
+        - [[helmfile]]'s core is `helmfile.yaml`
+    - Schema
+        - [helmfile](https://helmfile.readthedocs.io/en/latest/)
+        - `helmfiles: List[dict]`
+            - nested include
+            - `path: str`
+            - `selectors: List[<name=value>:str]`
+            - `values: List[str | Dict[<k>:str, <v>:str]]`
+        - `missingFileHandler: "Error"`
+        - `bases: List[str]`
+        - `repositories: List[dict]`
+            - `name: str`
+            - `url: str`
+            - `oci: bool = false`
+            - `skipTLSVerify: bool = false`
+            - `plainHttp: bool = false`
+            - `passCredentials: bool`
+            - `username: str`
+            - `password: str`
+            - `certFile: str`
+            - `keyFile: str`
+            - `verify: bool`
+            - `keyring: str`
+            - `caFile: str`
+        - `releases: List[dict]`
+            - `installed: bool = true`
+                - `true` to install release
+                - `false` to uninstall release
+            - `name: str`
+            - `chart: <repo/chart:str>`
+            - `version`
+            - `kubeContext: str = ""`
+            - `namespace: str`
+            - `createNamespace: bool`
+            - `values: List[Dict[str, Any] | <file:str>]`
+            - `set: List[dict]`
+                - `name`
+                    - e.g. `foo.bar.biz`
+                    - e.g. `foo[0]`
+                - `value: str`
+                    - templated value
+                    - e.g. `{{ .Namespace }}`
+                - `values: List[Any]`
+                - `file: str`
+            - `secrets: List[<file:str>]`
+            - `labels: Dict[str, str]`
+            - `condition: str`
+            - `atomic: bool = false`
+            - `wait: bool`
+            - `waitForJobs: bool`
+            - `timeout: str`
+            - `force: bool`
+            - `suppressDiff: bool`
+            - `suppressOutputLineRegex: List`
+            - `historyMax: int = 10`
+            - `postRenderer: str`
+            - `postRendererArgs: List[str]`
+        - `environments: Dict[<env>:str, dict]`
+            - `<environmen_name>: dict`
+                - `kubeContext: str`
+                - `values: List[str | Dict[<k>, <v>]]`
+                - `secrets: List`
+                - `missingFileHandler: "Error"`
+        - `helmDefaults: Dict[str, Any]`
+            - set default values
+        - `commonLabels: List[Dict[str, str]]`
+        - `apiVersions: List[str]`
+        - `kubeVersion: str`
+            - e.g. `v1.21`

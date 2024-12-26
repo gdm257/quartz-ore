@@ -1,0 +1,73 @@
+---
+tags:
+  - flag/LANGUAGE/TypeScript
+  - flag/LANGUAGE/JS
+  - flag/Library/APILayer/Implement__/Web/CSR-Framework
+  - flag/Library/APILayer/Implement__/Web/DOM
+  - Label/Industry-工业科学/IT/Library/3rdLibrary
+---
+
+- Pro
+    - Support mixins
+        - [组合式 API | Vue.js](https://www.vueframework.com/docs/v3/cn/guide/composition-api-introduction.html)
+
+- Philosophy
+    - Componentization
+        - Shadow DOM
+            - to apply [[CSS]]
+        - Dynamic
+            - to render [[HTML]] by incoming data
+    - CSR Component
+        - [[django-unicorn]] 就是典型的 SSR Component
+        - [[vue]] uses CSR Component
+        - [[jQuery]] use CSR DOM
+        - 区别在于「状态管理（生成、更新）」是由 Client 还是 Server 完成
+        - 直接操作 DOM 相当于没有了「状态层」，单向数据流少了个 State
+    - Communication between Components
+        - Element e.g. [[Vanilla JS]] & [[jQuery]]
+        - Nested Components (`props`)
+        - Globals (State)
+        - Event
+    - 数据响应式
+        - object 的 property 被修改时（`set` decriptor），自动运行依赖该 property 的 functions，从而实现更新 DOM/CSSOM
+    - 单向数据流
+        - Action -> State -> View -> Action
+            - 永远是「数据（i.e. 变量/State）」生成「界面（View）」
+        - Action
+            - Request
+            - Event
+        - State
+            - API Server
+            - Callback
+        - View
+            - DOM
+        - 变量从何而来？
+            - 经过上面的高度概括，总结下来就 3 个
+            - Request
+                - URL
+                - Body
+            - Event
+                - Name
+                - Element
+                - Context
+            - Database
+                - Filters come from other data source (event, request)
+    - 状态管理
+        - 什么叫状态？
+            - 什么叫变量？
+                - 可以变的叫变量
+                - 状态可变
+                - 所以状态是变量
+            - 变量代表什么？
+                - 变量是依赖
+                - 依赖可简单分为内部依赖、外部依赖
+            - 从一个 function 的角度来看，
+                - 内部依赖：局部变量、函数参数
+                - 外部依赖：非本地变量、全局变量、外部系统（数据库）
+            - Component 也一样，
+                - `props` 入参为「内部状态」（e.g. `hover:` 伪类）
+                - `props` nested components 透传其实是「外部依赖」
+                - state 为受管理的外部状态，因为受管理，为「全局状态」
+                - selector 为不受管理的「外部依赖」
+                - event 难以追踪的「外部依赖」
+                - return 返回值是 HTML

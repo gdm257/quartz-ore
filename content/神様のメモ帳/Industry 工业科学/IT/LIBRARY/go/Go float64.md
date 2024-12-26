@@ -1,0 +1,11 @@
+---
+aliases:
+- float64
+tags:
+- flag/LANGUAGE/Go
+- Label/Industry-工业科学/IT/Library/BuiltinDataType
+- flag/Library/DataAccessLayer/Implement__/OOP/number
+---
+
+- DSL
+    - Literal `num := 3.14`

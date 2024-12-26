@@ -1,0 +1,86 @@
+---
+tags:
+  - Label/Industry-工业科学/IT/APP/Plugin/VSCode/EXT
+github: vscode-neovim/vscode-neovim
+dependencies:
+  - "[[neovim]]"
+vscode: asvetliakov.vscode-neovim
+vim-commands:
+  - :e[dit]
+  - :ex
+  - :ene[w]
+  - :fin[d]
+  - :q[uit]
+  - :wq
+  - :x[it]
+  - :qa[ll]
+  - :wqa[ll]
+  - :xa[ll]
+  - :sp[lit]
+  - :vs[plit]
+  - :new
+  - :vne[w]
+  - :on[ly]
+  - tabe[dit]
+  - :tabnew
+  - :tabf[ind]
+  - :tab
+  - :tabs
+  - :tabc[lose]
+  - :tabo[nly]
+  - :tabn[ext]
+  - :tabp[revious]
+  - :tabr[ewind]
+  - :tabfir[st]
+  - :tabl[ast]
+  - :tabm[ove]
+require: vscode
+---
+
+- Fundamentals
+    - Keybindings
+        - **所有**快捷键其实都由 [[VSCode]] 处理，只不过 [[vscode-neovim]] 注册了足够多的快捷键，以实现 [[Vim]]/[[neovim]] 风格的按键操作
+        - keymap 发送给 [[neovim]] 处理，**必须提前**在 [[VSCode]] `keybindings.json` 中注册
+            - `"command": "vscode-neovim.send"`
+            - 注册后，[[VSCode]] 会把键盘输入事件交给 [[vscode-neovim]] 处理，[[vscode-neovim]] 再发送给 [[neovim]]
+        - 因此严格来说 [[vscode-neovim]] 并不完全是 [[neovim]] 的 client，只不过是 *大部分* keymaps & commands 交给 [[neovim]] 来处理而已，这一部分能算是 client，其余部分跟 [[VSCodeVim]] 没区别，都是「模拟」
+        - [vscode-neovim/runtime/vscode/overrides at master · vscode-neovim/vscode-neovim](https://github.com/vscode-neovim/vscode-neovim/tree/master/runtime/vscode/overrides)
+    - [[Vim]] `:command`s
+        - Most commands are passed through [[neovim]]
+            - Lots of commands have no sense for [[VSCode]] E.g. LSP
+        - Some commands are handled by [[vscode-neovim]] itself
+            - [vim style commands](https://github.com/search?q=repo%3Avscode-neovim%2Fvscode-neovim%20AlterCommand&type=code)
+
+- Keybindings
+    - References
+        - [vscode-neovim/runtime/vscode/overrides at master · vscode-neovim/vscode-neovim](https://github.com/vscode-neovim/vscode-neovim/tree/master/runtime/vscode/overrides)
+    - [[VSCode]] keybindings
+        - `h` `j` `k` `l`
+        - `gg` `G`
+        - `C-d` `C-u`
+        - `C-f` `C-b`
+        - `K`
+            - `editor.action.showHover`
+    - [[VSCode]] passthrough keybindings (to [[neovim]])
+        - `C-` `A-` `nonalphanumerical-`
+            - Idea
+                - Cmdline mode special keys passthrough
+            - Keybindings
+                - Run the `Preferences: Open Keyboard Shortcuts` vscode command and search for "neovim" to see all vscode and passthrough keybindings
+            - Fundamentals
+                - Every special (control/alt/non-alphanumerical) keyboard shortcut must be explicitly defined in [[VSCode]] to let [[vscode-neovim]] send to [[neovim]]. To customize, edit [[VSCode]] `keybindings.json`. For example:
+                - `"command": "vscode-neovim.send"`
+                - `"key": "alt-h"`
+                - `"args": "<A-h>"`
+                - `"when": "editorTextFocus && neovim.mode != insert"`
+        - `vscode-neovim.compositeKeys: []`
+            - Idea
+                - alphanumerical keybindings
+            - Examples
+                - `"jj": {"command": "vscode-neovim.escape", args: []}`
+        - `vscode-neovim.ctrlKeysForInsertMode: ["a", "d", "h", "j", "m", "o", "r", "t", "u", "w"]` by default
+            - Insert mode control keys passthrough
+        - `vscode-neovim.ctrlKeysForNormalMode: ["a", "b", "d", "e", "f", "h", "i", "j", "k", "l", "m", "o", "r", "t", "u", "v", "w", "x", "y", "z", "/", "]"]` by default
+            - Normal mode control keys passthrough
+    - [[neovim]] keybindings
+        - `:help ...` to open documents
