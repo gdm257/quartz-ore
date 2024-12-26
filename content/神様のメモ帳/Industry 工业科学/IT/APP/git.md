@@ -1109,6 +1109,8 @@ $ git clone rsync://example.com/path/to/repo.git/
 
 ```
 
+## show-ref
+
 ## Philosophy
 
 1. 「三棵树」：工作目录，它持有实际文件，下文简写为 dir；Index，它是个缓存区域；HEAD（
