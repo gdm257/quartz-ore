@@ -1,5 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
+import { krokiAliases } from "./quartz/plugins/transformers/kroki"
 
 /**
  * Quartz 4.0 Configuration
@@ -73,6 +74,11 @@ const config: QuartzConfig = {
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
+      Plugin.Kroki({
+        server: "https://kroki.io",
+        output: "inline-svg",
+        alias: krokiAliases,
+      }),
     ],
     filters: [Plugin.RemoveDrafts(), Plugin.ExplicitPublish()],
     emitters: [
